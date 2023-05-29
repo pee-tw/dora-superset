@@ -1,11 +1,14 @@
 import requests
 from requests.auth import HTTPBasicAuth
+from jira import JIRA
 
 class SprintReport:
     def __init__(self, server, username, password) -> None:
         self.SERVER = server
         self.USERNAME = username
         self.PASSWORD = password
+        options = { 'server': self.SERVER }
+        self.JIRA = JIRA(options, basic_auth=(self.USERNAME, self.PASSWORD))
     
     def get_report(self, board_id, sprint_id):
         response = requests.get(f"{self.SERVER}//rest/greenhopper/latest/rapid/charts/sprintreport?rapidViewId={board_id}&sprintId={sprint_id}", auth=HTTPBasicAuth(self.USERNAME, self.PASSWORD))
@@ -30,3 +33,6 @@ class SprintReport:
             }
         
         return return_object
+
+    def get_sprints(self, board_id):
+        return self.JIRA.sprints(board_id)
