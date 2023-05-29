@@ -2,7 +2,7 @@
 name = "dora-superset"
 version = "0.1.0"
 description = "Sample project to show how to get started with monitoring DORA metrics"
-authors = ["Your Name <you@example.com>"]
+authors = ["Pee Tankulrat", "Kanin Kearpimy"]
 readme = "README.md"
 packages = [{include = "dora_superset"}]
 

@@ -1,0 +1,12 @@
+name: CI / CD
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-deploy-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simulate test
+        run: exit 0
