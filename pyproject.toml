@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "dora-superset"
+version = "0.1.0"
+description = "Sample project to show how to get started with monitoring DORA metrics"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "dora_superset"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+gcsa = "^2.1.0"
+jira = "^3.5.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
