@@ -1,7 +1,8 @@
 from dateutil.parser import isoparse
 from gcsa.google_calendar import GoogleCalendar
 
-calendar = GoogleCalendar('ptankulrat@gmail.com')
+# TODO: Replace in pipeline
+calendar = GoogleCalendar(credentials_path='credentials.json', token_path='token.pickle')
 for event in calendar:
     print(event)
 
