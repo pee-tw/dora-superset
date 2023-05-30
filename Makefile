@@ -8,3 +8,10 @@ install:
 create-table:
 	poetry run python -m model.CreateTables
 
+.PHONY: etl-jira
+etl-jira:
+	poetry run python -m pipeline.ETLJira
+
+.PHONY: etl-calendar
+etl-calendar:
+	poetry run python -m pipeline.ETLCalendar

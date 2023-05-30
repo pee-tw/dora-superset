@@ -10,7 +10,16 @@ DB_PASS = os.getenv("DB_PASS")
 DB_HOST = os.getenv("DB_HOST")
 
 
-db = MySQLDatabase(DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST, port=3306)
+db = MySQLDatabase(
+    DB_NAME, 
+    user=DB_USER, 
+    password=DB_PASS, 
+    host=DB_HOST, 
+    port=3306, 
+    ssl = {
+        "ca": "/etc/ssl/cert.pem"
+        }
+    )
 
 db.connect()
 

@@ -3,7 +3,7 @@ from model.BaseModel import BaseModel
 
 class Sprint(BaseModel):
     id = IntegerField(unique=True)
-    names = CharField()
+    name = CharField()
     totalIssues = IntegerField()
     completedIssues = IntegerField()
     inCompletedIssues = IntegerField()

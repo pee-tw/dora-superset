@@ -1,5 +1,6 @@
 from pipeline.ETLJira import JiraPipeline
 from pipeline.ETLCalendar import CalendarPipeline
+from model.jira.Sprint import Sprint
 
 jira_pipeline = JiraPipeline()
 calendar_pipeline = CalendarPipeline()

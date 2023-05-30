@@ -22,6 +22,7 @@ PROJECT_PREFIX = "GP-"
 
 class JiraPipeline:
     def start(self):
+        print('start Jira Pipeline')
         g = Github(GITHUB_TOKEN)
         repo = g.get_repo("pee-tw/dora-superset")
         releases = repo.get_releases()
@@ -40,6 +41,7 @@ class JiraPipeline:
         sprints = sprint_report.get_sprints(BOARD_ID)
         response = []
         for sprint in range(len(sprints)):
+            print(f'Run Sprint {sprints[sprint].name}')
             reports = sprint_report.get_complete_noncomplete_issues(
                 BOARD_ID, sprints[sprint].id
             )
@@ -47,7 +49,11 @@ class JiraPipeline:
                 *reports["completedIssues"]["data"],
                 *reports["issuesNotCompletedInCurrentSprint"]["data"],
             ]
-            flattern = map(lambda card: card["key"], cards)
+
+            flattern = {}
+            for card in cards:
+                flattern[card["key"]] = card
+                
             response.append(
                 {
                     "name": sprints[sprint].name,
@@ -55,8 +61,9 @@ class JiraPipeline:
                     "cards": list(flattern),
                 }
             )
-
             issues = sprint_report.get_issues_by_sprint_name(sprints[sprint].name)
+            
+            print(" ==> Save Issues <== ")
             for issue in issues:
                 lead_time = calculate_lead_time(issue)
                 Issue.create(
@@ -64,15 +71,18 @@ class JiraPipeline:
                     title=issue.fields.summary,
                     sprintId=sprints[sprint].id,
                     leadTime=lead_time,
-                    statusInSprint=issue.fields.status.name,
+                    statusInSprint=flattern[issue.key]['statusName'],
+                    status=issue.fields.status.name,
                     type=issue.fields.issuetype.name,
                 )
 
+            print(" ==> Save Sprint <== ")
             Sprint.create(
-                id=sprints[sprint].id, name=sprints[sprint].name, totalIssue=len(issues)
+                id=sprints[sprint].id, 
+                name=sprints[sprint].name, 
+                totalIssues=(len(reports["completedIssues"]["data"]) + len(reports["issuesNotCompletedInCurrentSprint"]["data"])),
+                completedIssues=len(reports["completedIssues"]["data"]),
+                inCompletedIssues=len(reports["issuesNotCompletedInCurrentSprint"]["data"]),
             )
+
         return response
-
-
-pipeline = JiraPipeline()
-pipeline.start()

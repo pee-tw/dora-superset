@@ -3,6 +3,8 @@ from gcsa.google_calendar import GoogleCalendar
 from dotenv import load_dotenv
 import os
 import re
+from model.calendar.Meeting import Meeting
+from model.jira.Sprint import Sprint
 
 load_dotenv()
 
@@ -76,21 +78,49 @@ class CalendarPipeline:
             print(f"{sprint['start']} - {sprint['end']}")
             for event in good_calendar.get_event(sprint['start'], sprint['end']):
                 total_minute = 0
-                print(event.summary, event.recurrence)
                 name = re.findall("GP-(?:^|\d)+", event.summary)
                 is_reserve, reserve = check_reserve_meeting(event.summary)
+                
                 if((len(name) > 0 and name[0] in cards[sprint['name']]) or is_reserve):
                     if(is_reserve and reserve == "Standup"):
-                        total_minute = ((event.end - event.start).total_seconds() / 60) * 10
+                        total_minute = int(((event.end - event.start).total_seconds() / 60) * 10)
+                        Meeting.create(
+                            id=event.id,
+                            sprintId=sprint['id'],
+                            title=sprint['name'],
+                            time=total_minute,
+                            issue=reserve
+                        )
                     else:
-                        total_minute = (event.end - event.start).total_seconds() / 60
+                        total_minute = int((event.end - event.start).total_seconds() / 60)
+                        Meeting.create(
+                            id=event.id,
+                            sprintId=sprint['id'],
+                            title=sprint['name'],
+                            time=total_minute,
+                            issue=name[0] if len(name) > 0 else reserve
+                        )
                     timer['good_meeting_time'] = timer['good_meeting_time'] + total_minute
                 else:
-                    total_minute = (event.end - event.start).total_seconds() / 60
+                    total_minute = int((event.end - event.start).total_seconds() / 60)
                     timer['other_meeting_time'] = timer['other_meeting_time'] + total_minute
+                    Meeting.create(
+                        id=event.id,
+                        sprintId=sprint['id'],
+                        title=sprint['name'],
+                        time=total_minute,
+                        issue="Other"
+                    )
+                                        
+            sprint_entity = Sprint.select().where(Sprint.name == sprint['name']).get()
+
+            print(f" update Sprint {sprint['name']}")
+            sprint_entity.goodTimeMeeting = timer['good_meeting_time']
+            sprint_entity.otherTimeMeeting = timer['other_meeting_time']
+            sprint_entity.workingTime = timer['working_time']
+            sprint_entity.save()
+            
             sprints_timer.append({
                 "name": sprint['name'],
                 "time_overall": timer
             })
-        
-        print(sprints_timer)
