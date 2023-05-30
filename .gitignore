@@ -1,5 +1,8 @@
 credentials.json
 token.pickle
 .DS_Store
-*.pyc
 .env
+
+# Python cache
+*.pyc
+__pycache__
