@@ -8,13 +8,14 @@ from model.jira.Sprint import Sprint
 
 load_dotenv()
 
-BAD_CALENDAR_ID = os.getenv('BAD_CALENDAR_ID')
+# BAD_CALENDAR_ID = os.getenv('BAD_CALENDAR_ID')
+# PROJECT_PREFIX = "BE"
 GOOD_CALENDAR_ID = os.getenv('GOOD_CALENDAR_ID')
+PROJECT_PREFIX = "GP"
+CALENDAR_ID = GOOD_CALENDAR_ID
 
-# TODO: Replace in pipeline
-# calendar = GoogleCalendar(credentials_path='credentials.json', token_path='token.pickle')
-# for event in calendar:
-#     print(event)
+
+
 class Calendar:
     def __init__(self, auth_key) -> None:
         self.auth_key = auth_key
@@ -45,6 +46,27 @@ sprints = [
     }
 ]
 
+# sprints = [
+#     {
+#         "id": 2,
+#         "name": 'BE Sprint 1',
+#         "start": isoparse("2023-05-22"),
+#         "end": isoparse("2023-06-03")
+#     },
+#     {
+#         "id": 6,
+#         "name": 'BE Sprint 2',
+#         "start": isoparse("2023-06-05"),
+#         "end": isoparse("2023-06-17")
+#     },
+#     {
+#         "id": 7,
+#         "name": 'BE Sprint 3',
+#         "start": isoparse("2023-06-19"),
+#         "end": isoparse("2023-07-01")
+#     }
+# ]
+
 def create_dict(array):
     dictionary = {}
     for item in array:
@@ -65,7 +87,7 @@ class CalendarPipeline:
         cards = {}
         for jira_sprint in jira_data:
             cards[jira_sprint['name']] = create_dict(jira_sprint['cards'])
-        good_calendar = Calendar(GOOD_CALENDAR_ID)
+        good_calendar = Calendar(CALENDAR_ID)
 
         sprints_timer = []
         for sprint in sprints:
@@ -78,39 +100,29 @@ class CalendarPipeline:
             print(f"{sprint['start']} - {sprint['end']}")
             for event in good_calendar.get_event(sprint['start'], sprint['end']):
                 total_minute = 0
-                name = re.findall("GP-(?:^|\d)+", event.summary)
+                name = re.findall(f"{PROJECT_PREFIX}-(?:^|\d)+", event.summary)
                 is_reserve, reserve = check_reserve_meeting(event.summary)
-                
+                issue_type = ""
                 if((len(name) > 0 and name[0] in cards[sprint['name']]) or is_reserve):
                     if(is_reserve and reserve == "Standup"):
                         total_minute = int(((event.end - event.start).total_seconds() / 60) * 10)
-                        Meeting.create(
-                            id=event.id,
-                            sprintId=sprint['id'],
-                            title=sprint['name'],
-                            time=total_minute,
-                            issue=reserve
-                        )
+                        issue_type = reserve
                     else:
                         total_minute = int((event.end - event.start).total_seconds() / 60)
-                        Meeting.create(
-                            id=event.id,
-                            sprintId=sprint['id'],
-                            title=sprint['name'],
-                            time=total_minute,
-                            issue=name[0] if len(name) > 0 else reserve
-                        )
+                        issue_type = name[0] if len(name) > 0 else reserve
                     timer['good_meeting_time'] = timer['good_meeting_time'] + total_minute
                 else:
                     total_minute = int((event.end - event.start).total_seconds() / 60)
                     timer['other_meeting_time'] = timer['other_meeting_time'] + total_minute
-                    Meeting.create(
-                        id=event.id,
-                        sprintId=sprint['id'],
-                        title=sprint['name'],
-                        time=total_minute,
-                        issue="Other"
-                    )
+                    issue_type = "Other"
+                
+                Meeting.create(
+                    id=event.id,
+                    sprintId=sprint['name'],
+                    title=sprint['name'],
+                    time=total_minute,
+                    issue=issue_type
+                )
                                         
             sprint_entity = Sprint.select().where(Sprint.name == sprint['name']).get()
 

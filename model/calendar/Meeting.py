@@ -4,7 +4,7 @@ from model.jira.Sprint import Sprint
 
 class Meeting(BaseModel):
     id = CharField()
-    sprintId = IntegerField()
+    sprintId = CharField()
     title = CharField()
     time = IntegerField()
     issue = CharField()

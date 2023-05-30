@@ -4,7 +4,7 @@ from model.BaseModel import BaseModel
 class Issue(BaseModel):
     id = CharField()
     title = CharField()
-    sprintId = IntegerField()
+    sprintId = CharField()
     leadTime = FloatField()
     statusInSprint = CharField()
     status = CharField()

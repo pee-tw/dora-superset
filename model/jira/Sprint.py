@@ -2,7 +2,7 @@ from peewee import IntegerField, CharField
 from model.BaseModel import BaseModel
 
 class Sprint(BaseModel):
-    id = IntegerField(unique=True)
+    id = CharField(unique=True)
     name = CharField()
     totalIssues = IntegerField()
     completedIssues = IntegerField()

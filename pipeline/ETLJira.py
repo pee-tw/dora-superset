@@ -16,8 +16,10 @@ PAT = os.getenv("JIRA_PAT")
 AUTH_USER = os.getenv("AUTH_USER")
 SERVER = os.getenv("SERVER")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-BOARD_ID = 1
-PROJECT_PREFIX = "GP-"
+BOARD_ID = 1 # GP team
+PROJECT_PREFIX = "GP-" # GP team prefix
+# BOARD_ID = 2
+# PROJECT_PREFIX = "BE-"
 
 
 class JiraPipeline:
@@ -69,7 +71,7 @@ class JiraPipeline:
                 Issue.create(
                     id=issue.key,
                     title=issue.fields.summary,
-                    sprintId=sprints[sprint].id,
+                    sprintId=sprints[sprint].name,
                     leadTime=lead_time,
                     statusInSprint=flattern[issue.key]['statusName'],
                     status=issue.fields.status.name,
@@ -78,7 +80,7 @@ class JiraPipeline:
 
             print(" ==> Save Sprint <== ")
             Sprint.create(
-                id=sprints[sprint].id, 
+                id=sprints[sprint].name, 
                 name=sprints[sprint].name, 
                 totalIssues=(len(reports["completedIssues"]["data"]) + len(reports["issuesNotCompletedInCurrentSprint"]["data"])),
                 completedIssues=len(reports["completedIssues"]["data"]),
