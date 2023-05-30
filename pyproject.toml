@@ -11,7 +11,13 @@ python = "^3.9"
 gcsa = "^2.1.0"
 jira = "^3.5.0"
 pygithub = "^1.58.2"
+mysqlclient = "^2.1.1"
+peewee = "^3.16.2"
+python-dotenv = "^1.0.0"
 
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
 
 [build-system]
 requires = ["poetry-core"]
