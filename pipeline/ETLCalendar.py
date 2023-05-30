@@ -22,7 +22,6 @@ class Calendar:
         return self.calendar.get_events(start, end)
 
 
-
 sprints = [
     {
         "id": 1,
@@ -43,13 +42,6 @@ sprints = [
         "end": isoparse("2023-07-01")
     }
 ]
-
-# bad_calendar = Calendar(BAD_CALENDAR_ID)
-# for event in bad_calendar.get_event(start_date, end_date):
-#     print(event)
-#     print(event.description)
-#     print(event.attendees)
-#     print(event.creator)
 
 def create_dict(array):
     dictionary = {}

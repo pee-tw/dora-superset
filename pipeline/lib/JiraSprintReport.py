@@ -37,5 +37,5 @@ class SprintReport:
     def get_sprints(self, board_id):
         return self.JIRA.sprints(board_id)
     
-    def get_issues_by_sprint_id(self, sprint_id):
-        return self.JIRA.search_issues(f'sprint = "{sprint_id}"')
+    def get_issues_by_sprint_name(self, sprint_name):
+        return self.JIRA.search_issues(f'sprint = "{sprint_name}"')

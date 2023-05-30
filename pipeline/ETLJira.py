@@ -6,6 +6,7 @@ from github import Github
 
 from model.jira.Issue import Issue
 from model.jira.Sprint import Sprint
+from pipeline.lib.LeadTime import calculate_lead_time
 
 from .lib.JiraSprintReport import SprintReport
 
@@ -55,17 +56,11 @@ class JiraPipeline:
                 }
             )
 
-            issues = sprint_report.get_issues_by_sprint_id(sprints[sprint].id)
+            issues = sprint_report.get_issues_by_sprint_name(sprints[sprint].name)
             for issue in issues:
-                released_on = None
-                # TODO: Calculate lead time
-                # first_appeared = datetime().now()
-                for release in release_with_issues:
-                    if issue.key in release["issues"]:
-                        released_on = release['date']
-                lead_time = 0
+                lead_time = calculate_lead_time(issue)
                 Issue.create(
-                    id=issue.id,
+                    id=issue.key,
                     title=issue.fields.summary,
                     sprintId=sprints[sprint].id,
                     leadTime=lead_time,

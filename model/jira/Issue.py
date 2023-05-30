@@ -1,11 +1,13 @@
-from peewee import IntegerField, CharField, ForeignKeyField
+from peewee import IntegerField, CharField, FloatField
 from model.BaseModel import BaseModel
 
 class Issue(BaseModel):
-    id = IntegerField(unique=True)
+    id = CharField()
     title = CharField()
     sprintId = IntegerField()
-    leadTime = IntegerField()
+    leadTime = FloatField()
     statusInSprint = CharField()
     status = CharField()
     type = CharField()
+    class Meta:
+        primary_key = False
