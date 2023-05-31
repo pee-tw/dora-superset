@@ -9,6 +9,11 @@ This is a PoC project that demonstrate how might we keep track of lead time on a
 - pygithub (GitHub Python wrapper)
 - peewee (Python MySQL ORM)
 
+## Pre-requisites
+- To authenticate with Google Calendar, you'll need to create an OAuth credentials on GCP. Run `make auth-calendar` to save token as a file. To setup OAuth authentication screen please follow the instructions [here](https://google-calendar-simple-api.readthedocs.io/en/latest/getting_started.html#getting-started)
+- Have a Personal Access Token for GitHub
+- Have a Personal Access Token for Jira
+
 ## How to run the script
 - Install Poetry if you don't have it installed already. More info [here](https://python-poetry.org/docs/#installation).
 - Run `make install` to install all the packages

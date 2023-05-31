@@ -8,8 +8,6 @@ from model.jira.Sprint import Sprint
 
 load_dotenv()
 
-# BAD_CALENDAR_ID = os.getenv('BAD_CALENDAR_ID')
-# PROJECT_PREFIX = "BE"
 GOOD_CALENDAR_ID = os.getenv('GOOD_CALENDAR_ID')
 PROJECT_PREFIX = "GP"
 CALENDAR_ID = GOOD_CALENDAR_ID
@@ -19,7 +17,7 @@ CALENDAR_ID = GOOD_CALENDAR_ID
 class Calendar:
     def __init__(self, auth_key) -> None:
         self.auth_key = auth_key
-        self.calendar = GoogleCalendar(self.auth_key)
+        self.calendar = GoogleCalendar(default_calendar=self.auth_key, token_path="token.pickle")
     
     def get_event(self, start, end):
         return self.calendar.get_events(start, end)
@@ -45,27 +43,6 @@ sprints = [
         "end": isoparse("2023-07-01")
     }
 ]
-
-# sprints = [
-#     {
-#         "id": 2,
-#         "name": 'BE Sprint 1',
-#         "start": isoparse("2023-05-22"),
-#         "end": isoparse("2023-06-03")
-#     },
-#     {
-#         "id": 6,
-#         "name": 'BE Sprint 2',
-#         "start": isoparse("2023-06-05"),
-#         "end": isoparse("2023-06-17")
-#     },
-#     {
-#         "id": 7,
-#         "name": 'BE Sprint 3',
-#         "start": isoparse("2023-06-19"),
-#         "end": isoparse("2023-07-01")
-#     }
-# ]
 
 def create_dict(array):
     dictionary = {}
