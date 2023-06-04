@@ -11,12 +11,10 @@ jobs:
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v3
-      - name: Install poetry
-        run: pipx install poetry
       - uses: actions/setup-python@v4
         with:
           python-version: "3.9"
           cache: "poetry"
       - run: poetry install
-      - name: Run scripts
-        run: echo "test"
+      - name: Run scripts (This should be poetry run python main.py)
+        run: echo "Mock running the actual scripts to fetch data"
