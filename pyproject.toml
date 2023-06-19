@@ -4,7 +4,6 @@ version = "0.1.0"
 description = "Sample project to show how to get started with monitoring DORA metrics"
 authors = ["Pee Tankulrat", "Kanin Kearpimy"]
 readme = "README.md"
-packages = [{include = "dora_superset"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
